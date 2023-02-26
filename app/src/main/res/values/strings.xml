@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Фильмы</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_films">Фильмы</string>
+    <string name="title_cinema">Кинотеатры</string>
+    <string name="title_tickets">Билеты</string>
+    <string name="title_category">Жанры</string>
+    <string name="title_setting">Настройки</string>
+    <string name="enter_login">Введите логин</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="sign_in">Авторизоваться</string>
+    <string name="token">token</string>
+    <string name="register_text">Еще нет аккаунта? Зарегистрируйтесь</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="enter_first_name">Введите фамилию</string>
+    <string name="enter_middle_name">Введите имя</string>
+    <string name="enter_repeat_password">Повторите пароль</string>
+    <string name="film_id">film_id</string>
+    <string name="category_id">category_id</string>
+    <string name="map">Карта</string>
+</resources>

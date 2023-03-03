@@ -13,7 +13,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.models.CategoryModel
 import com.example.my_movie_app.api.models.CinemaModel
-import com.example.my_movie_app.api.models.FilmsModel
+import com.example.my_movie_app.api.models.FilmModel
 
 
 class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemClickListener) :
@@ -45,7 +45,7 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is FilmViewHolder -> holder.onBind(
-                renderList[position] as FilmsModel,
+                renderList[position] as FilmModel,
                 delegate::onClick
             )
             is CategoryViewHolder -> holder.onBind(
@@ -76,7 +76,7 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
         private val nameFilm: AppCompatTextView = itemView.findViewById(R.id.nameFilm)
         private val ratingFilm: AppCompatTextView = itemView.findViewById(R.id.ratingFilm)
 
-        open fun onBind(model: FilmsModel, onClick: (Int) -> Unit) {
+        open fun onBind(model: FilmModel, onClick: (Int) -> Unit) {
             nameFilm.text = model.title
             ratingFilm.text = model.stars
             Glide

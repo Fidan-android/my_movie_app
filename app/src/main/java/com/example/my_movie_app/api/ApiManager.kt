@@ -17,30 +17,48 @@ import java.util.concurrent.TimeUnit
 
 object ApiManager {
     lateinit var apiService: ApiService
-    private var retrofit: Retrofit? = null
-    const val validatorErrorKey = "message"
+    lateinit var cinemaService: CinemaService
+    private var apiRetrofit: Retrofit? = null
+    private var cinemaRetrofit: Retrofit? = null
+
     private var connectivityManager: ConnectivityManager? = null
     private var connectivityCallback: ConnectivityManager.NetworkCallback? = null
 
     init {
-        initService(initRetrofit())
+        initApiRetrofit()
+        initCinemaRetrofit()
     }
 
-    private fun initRetrofit(): Retrofit {
-        if (retrofit != null) {
-            return retrofit!!
+    private fun initApiRetrofit() {
+        if (apiRetrofit == null) {
+            val gson = Gson()
+                .newBuilder()
+                .setLenient()
+                .create()
+            apiRetrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl("http://n931333e.beget.tech/api/v3/")
+                .client(initOkHttpClient())
+                .build()
         }
-        val gson = Gson()
-            .newBuilder()
-            .setLenient()
-            .create()
-        retrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl("http://n931333e.beget.tech/api/v3/")
-            .client(initOkHttpClient())
-            .build()
 
-        return retrofit!!
+        apiService = apiRetrofit!!.create(ApiService::class.java)
+    }
+
+    private fun initCinemaRetrofit() {
+        if (cinemaRetrofit == null) {
+            val gson = Gson()
+                .newBuilder()
+                .setLenient()
+                .create()
+            cinemaRetrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .baseUrl("https://kinopoiskapiunofficial.tech/api/v2.2/")
+                .client(initOkHttpClient())
+                .build()
+        }
+
+        cinemaService = cinemaRetrofit!!.create(CinemaService::class.java)
     }
 
     private fun initOkHttpClient(): OkHttpClient {
@@ -55,10 +73,6 @@ object ApiManager {
             .addInterceptor(AuthorizationInterceptor())
 
         return okHttpBuilder.build()
-    }
-
-    private fun initService(retrofit: Retrofit) {
-        apiService = retrofit.create(ApiService::class.java)
     }
 
 

@@ -5,6 +5,7 @@ import com.example.planner.models.RegistrationRequest
 
 object ApiHelper {
     private val apiService = ApiManager.apiService
+    private val cinemaService = ApiManager.cinemaService
 
     suspend fun login(body: LoginRequest) = apiService.login(body)
 
@@ -12,7 +13,7 @@ object ApiHelper {
 
     suspend fun getProfile() = apiService.getProfile()
 
-    suspend fun getFilms() = apiService.getFilms()
+    suspend fun getFilms() = cinemaService.getFilms()
 
     suspend fun getCategories() = apiService.getCategories()
 

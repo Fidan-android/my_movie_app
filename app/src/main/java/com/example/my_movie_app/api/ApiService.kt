@@ -17,9 +17,6 @@ interface ApiService {
     @GET("account/")
     suspend fun getProfile(): ProfileResponse
 
-    @GET("films/")
-    suspend fun getFilms(): FilmsResponse
-
     @GET("categories/")
     suspend fun getCategories(): CategoriesResponse
 

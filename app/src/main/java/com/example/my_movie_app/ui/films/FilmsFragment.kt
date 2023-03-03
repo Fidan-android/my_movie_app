@@ -1,6 +1,5 @@
 package com.example.my_movie_app.ui.films
 
-import android.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
-import com.example.my_movie_app.MainActivity
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
-import com.example.my_movie_app.api.models.FilmsModel
+import com.example.my_movie_app.api.models.FilmModel
 import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentFilmsBinding
 import com.example.my_movie_app.ui.adapters.RenderAdapter
@@ -26,7 +24,7 @@ class FilmsFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this)[FilmsViewModel::class.java]
     }
-    private val adapter: RenderAdapter<FilmsModel> by lazy {
+    private val adapter: RenderAdapter<FilmModel> by lazy {
         RenderAdapter(
             RenderViewType.FilmsViewType.viewType,
             object : RenderAdapter.IItemClickListener {
@@ -34,16 +32,12 @@ class FilmsFragment : Fragment() {
                     NavHostFragment.findNavController(this@FilmsFragment)
                         .navigate(
                             FilmsFragmentDirections.actionNavFilmsToFilmPageFragment(
-                                viewModel.onGetData().value?.get(position)?.id!!
+                                viewModel.onGetData().value?.get(position)?.kinopoiskId!!
                             ),
                             NavOptions.Builder().setRestoreState(true).build()
                         )
                 }
             })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(

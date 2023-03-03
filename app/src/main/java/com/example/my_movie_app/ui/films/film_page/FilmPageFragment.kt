@@ -1,7 +1,6 @@
 package com.example.my_movie_app.ui.films.film_page
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,12 +65,11 @@ class FilmPageFragment : Fragment() {
         })
         super.onStart()
         viewModel.onGetData().observe(viewLifecycleOwner) {
-            Log.d("bg_image", it.bgImage.toString())
             Glide
                 .with(requireContext())
                 .load(
                     GlideUrl(
-                        "http://n931333e.beget.tech/api/v3/img/" + it.bgImage,
+                        it.posterUrlPreview,
                         LazyHeaders.Builder()
                             .addHeader("User-Agent", "Mozilla/5.0")
                             .build()
@@ -84,7 +82,7 @@ class FilmPageFragment : Fragment() {
                 .with(requireContext())
                 .load(
                     GlideUrl(
-                        "http://n931333e.beget.tech/api/v3/img/" + it.image,
+                        it.posterUrl,
                         LazyHeaders.Builder()
                             .addHeader("User-Agent", "Mozilla/5.0")
                             .build()
@@ -94,12 +92,13 @@ class FilmPageFragment : Fragment() {
                 .error(R.drawable.logo)
                 .into(binding.logoFilm)
 
-            binding.titleFilm.text = it.title
-            binding.authorFilm.text = it.author
+            binding.titleFilm.text = it.nameRu
+            binding.authorFilm.text = ""
             binding.timeFilm.text =
-                if (it.time!! < 60) it.time.toString().plus("min") else (it.time / 60).toString()
-                    .plus("h ") + (it.time % 60).toString().plus("min")
-            binding.description.text = it.description
+                if (it.duration < 60) it.duration.toString()
+                    .plus("min") else (it.duration / 60).toString()
+                    .plus("h ") + (it.duration % 60).toString().plus("min")
+            binding.description.text = it.nameEn
         }
         viewModel.onProgressBar().observe(this) {
             if (it) {

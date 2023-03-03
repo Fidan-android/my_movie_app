@@ -2,15 +2,14 @@ package com.example.my_movie_app.ui.films.film_page
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.my_movie_app.api.ApiHelper
-import com.example.my_movie_app.api.models.FilmsModel
+import com.example.my_movie_app.api.models.FilmModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmsModel> {
+class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
 
-    private val filmLiveData: MutableLiveData<FilmsModel> = MutableLiveData()
+    private val filmLiveData: MutableLiveData<FilmModel> = MutableLiveData()
     private val isErrorLiveData: MutableLiveData<String> = MutableLiveData()
     private var filmId: Int = 0
     private val isProgress: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -29,18 +28,8 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmsModel> {
             return
         }
         isProgress.value = true
-        GlobalScope.launch(Dispatchers.IO) {
-            val response = ApiHelper.getFilms()
-            if (response.message == null) {
-                response.films.let { list ->
-                    filmLiveData.postValue(list?.first { item -> item.id == filmId })
-                    isProgress.postValue(false)
-                }
-            } else {
-                response.message.let {
-                    isErrorLiveData.postValue(it)
-                }
-            }
+        MainScope().launch(Dispatchers.IO) {
+
         }
     }
 }

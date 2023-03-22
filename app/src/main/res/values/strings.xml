@@ -11,7 +11,7 @@
     <string name="title_cinema">Кинотеатры</string>
     <string name="title_tickets">Билеты</string>
     <string name="title_category">Жанры</string>
-    <string name="title_setting">Настройки</string>
+    <string name="title_profile">Профиль</string>
     <string name="enter_login">Введите логин</string>
     <string name="enter_password">Введите пароль</string>
     <string name="sign_in">Авторизоваться</string>
@@ -24,4 +24,5 @@
     <string name="film_id">film_id</string>
     <string name="category_id">category_id</string>
     <string name="map">Карта</string>
+    <string name="empty_loves_films">В разделе "Понравившиеся" еще ничего нет, добавьте сюда свои любимые фильмы или сериалы</string>
 </resources>

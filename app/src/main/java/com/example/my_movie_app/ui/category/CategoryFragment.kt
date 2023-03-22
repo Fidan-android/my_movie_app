@@ -78,7 +78,7 @@ class CategoryFragment : Fragment() {
             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
         viewModel.onGetData().observe(viewLifecycleOwner) {
-            adapter.onUpdateRenderList(it)
+            adapter.onUpdateItems(it)
         }
         binding.swipeRefresh.setOnRefreshListener {
             binding.swipeRefresh.isRefreshing = false

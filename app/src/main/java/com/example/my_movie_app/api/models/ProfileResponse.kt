@@ -7,5 +7,7 @@ data class ProfileResponse(
     @SerializedName("name") val name: String,
     @SerializedName("last_name") val lastName: String? = null,
     @SerializedName("birthday") val birthday: String? = null,
+    @SerializedName("is_admin") val isAdmin: Boolean? = null,
+    @SerializedName("image_url") val imageUrl: String? = null,
     @SerializedName("message") val message: String? = null
 )

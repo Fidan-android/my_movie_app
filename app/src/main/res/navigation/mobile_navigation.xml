@@ -34,15 +34,10 @@
             app:destination="@id/mapFragment" />
     </fragment>
     <fragment
-        android:id="@+id/nav_tickets"
-        android:name="com.example.my_movie_app.ui.tickets.TicketFragment"
-        android:label="@string/title_tickets"
-        tools:layout="@layout/fragment_ticket" />
-    <fragment
-        android:id="@+id/nav_settings"
-        android:name="com.example.my_movie_app.ui.settings.SettingsFragment"
-        android:label="@string/title_setting"
-        tools:layout="@layout/fragment_settings" />
+        android:id="@+id/nav_profile"
+        android:name="com.example.my_movie_app.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/filmPageFragment"
         android:name="com.example.my_movie_app.ui.films.film_page.FilmPageFragment"

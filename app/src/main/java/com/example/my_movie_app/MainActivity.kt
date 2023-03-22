@@ -1,9 +1,12 @@
 package com.example.my_movie_app
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -32,8 +35,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_films,
                 R.id.nav_category,
                 R.id.nav_cinema,
-                R.id.nav_tickets,
-                R.id.nav_settings
+                R.id.nav_profile
             ), layoutDrawer
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.nav_host_fragment).popBackStack()
                     Properties.isHome = false
                 } else {
-                    binding.drawerLayout.openDrawer(Gravity.LEFT)
+                    binding.drawerLayout.openDrawer(GravityCompat.START)
                 }
                 return true
             }

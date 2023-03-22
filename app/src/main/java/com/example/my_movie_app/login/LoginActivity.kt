@@ -52,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
             ed.putString(getString(R.string.token), it)
             ed.apply()
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
         viewModel.onGetErrorMessage().observe(this) {
             binding.passwordLayout.error = it

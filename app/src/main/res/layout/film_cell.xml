@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootView"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:clickable="true"
@@ -28,7 +28,7 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/logo" />
 
-            <FrameLayout
+            <!--<FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
@@ -55,7 +55,7 @@
                     android:textColor="@color/White_70"
                     android:textSize="16sp" />
 
-            </FrameLayout>
+            </FrameLayout>-->
         </FrameLayout>
 
     </com.google.android.material.card.MaterialCardView>

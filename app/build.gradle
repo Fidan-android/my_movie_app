@@ -3,15 +3,17 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.my_movie_app"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -22,6 +24,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "kinopoisk_api_key", KINOPOISK_API_KEY
+        }
+        debug {
+            resValue "string", "kinopoisk_api_key", KINOPOISK_API_KEY
         }
     }
     compileOptions {
@@ -46,6 +52,8 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'org.osmdroid:osmdroid-android:6.1.14'
+    implementation 'com.google.firebase:firebase-crashlytics:18.2.9'
+    implementation 'com.google.firebase:firebase-analytics:20.1.2'
     kapt "android.arch.lifecycle:compiler:1.1.1"
 
     // UI

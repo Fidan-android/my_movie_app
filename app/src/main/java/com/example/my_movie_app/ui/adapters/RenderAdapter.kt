@@ -1,11 +1,14 @@
 package com.example.my_movie_app.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -57,16 +60,17 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
                 delegate::onClick
             )
         }
+        holder.setIsRecyclable(false)
     }
 
     override fun getItemCount() = renderList.size
 
-    override fun onUpdateRenderList(list: MutableList<T>) {
-        val temp = list.size
+    override fun onUpdateItems(list: MutableList<T>) {
+        val diffCallback = CustomDiffUtil(viewType, renderList, list)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         renderList.clear()
-        notifyItemRangeRemoved(0, temp)
         renderList.addAll(list)
-        notifyItemRangeInserted(0, temp)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     open class FilmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -74,21 +78,12 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
         private val rootView: LinearLayout = itemView.findViewById(R.id.rootView)
         private val logoFilm: AppCompatImageView = itemView.findViewById(R.id.logoFilm)
         private val nameFilm: AppCompatTextView = itemView.findViewById(R.id.nameFilm)
-        private val ratingFilm: AppCompatTextView = itemView.findViewById(R.id.ratingFilm)
 
         open fun onBind(model: FilmModel, onClick: (Int) -> Unit) {
-            nameFilm.text = model.title
-            ratingFilm.text = model.stars
+            nameFilm.text = model.nameRu
             Glide
                 .with(itemView.context)
-                .load(
-                    GlideUrl(
-                        "http://n931333e.beget.tech/api/v3/img/" + model.image,
-                        LazyHeaders.Builder()
-                            .addHeader("User-Agent", "Mozilla/5.0")
-                            .build()
-                    )
-                )
+                .load(model.posterUrlPreview)
                 .centerCrop()
                 .error(R.drawable.logo)
                 .into(logoFilm)

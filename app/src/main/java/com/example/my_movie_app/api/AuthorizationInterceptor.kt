@@ -18,6 +18,7 @@ class AuthorizationInterceptor : Interceptor {
             App.appContext.getString(R.string.app_name),
             MODE_PRIVATE
         ).getString("token", "") ?: ""
+        Log.d("token", token)
         try {
             val newRequest = request
                 .newBuilder()
@@ -25,6 +26,7 @@ class AuthorizationInterceptor : Interceptor {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", "Mozilla/5.0")
                 .addHeader("Authorization", "Bearer $token")
+                .addHeader("X-API-KEY", App.appContext.getString(R.string.kinopoisk_api_key))
                 .build()
             response = chain.proceed(newRequest)
         } catch (e: Exception) {

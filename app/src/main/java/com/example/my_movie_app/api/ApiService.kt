@@ -3,9 +3,9 @@ package com.example.my_movie_app.api
 import com.example.my_movie_app.api.models.*
 import com.example.planner.models.LoginRequest
 import com.example.planner.models.RegistrationRequest
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import okhttp3.MultipartBody
+import retrofit2.Call
+import retrofit2.http.*
 
 interface ApiService {
     @POST("login/")
@@ -15,7 +15,12 @@ interface ApiService {
     suspend fun registration(@Body body: RegistrationRequest): MessageResponse
 
     @GET("account/")
-    suspend fun getProfile(): ProfileResponse
+    fun getProfile(): Call<ProfileResponse>
+
+    @POST("account-image/")
+    fun updateImageProfile(
+        @Body body: UpdateImageProfileModel
+    ): Call<Any>
 
     @GET("categories/")
     suspend fun getCategories(): CategoriesResponse

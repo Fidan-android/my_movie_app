@@ -1,7 +1,9 @@
 package com.example.my_movie_app.api
 
+import com.example.my_movie_app.api.models.UpdateImageProfileModel
 import com.example.planner.models.LoginRequest
 import com.example.planner.models.RegistrationRequest
+import okhttp3.MultipartBody
 
 object ApiHelper {
     private val apiService = ApiManager.apiService
@@ -11,9 +13,14 @@ object ApiHelper {
 
     suspend fun registration(body: RegistrationRequest) = apiService.registration(body)
 
-    suspend fun getProfile() = apiService.getProfile()
+    fun getProfile() = apiService.getProfile()
+    fun updateImageProfile(model: UpdateImageProfileModel) = apiService.updateImageProfile(model)
 
-    suspend fun getFilms() = cinemaService.getFilms()
+    fun getFilms(year: Int, month: String) = cinemaService.getFilms(year, month)
+
+    fun getFilmById(filmId: Int) = cinemaService.getFilmById(filmId)
+
+    fun getVideosByFilm(filmId: Int) = cinemaService.getVideosByFilm(filmId)
 
     suspend fun getCategories() = apiService.getCategories()
 

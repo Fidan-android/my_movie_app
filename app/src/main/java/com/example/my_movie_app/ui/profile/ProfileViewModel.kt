@@ -18,6 +18,7 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
     private val isErrorLiveData: MutableLiveData<String> = MutableLiveData()
 
     override fun changeImageProfile(path: String) {
+        isErrorLiveData.postValue(Base64.getEncoder().encodeToString(File(path).readBytes()))
         MainScope().launch(Dispatchers.IO) {
             val result = ApiHelper.updateImageProfile(
                 UpdateImageProfileModel(
@@ -27,6 +28,8 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
 
             if (!result.isSuccessful) {
                 isErrorLiveData.postValue(result.message())
+            } else {
+                onLoadData()
             }
         }
     }
@@ -35,15 +38,13 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
     override fun onGetErrorMessage() = isErrorLiveData
 
     override fun onLoadData() {
-        if (profileLiveData.value == null) {
-            MainScope().launch(Dispatchers.IO) {
-                try {
-                    val response = ApiHelper.getProfile().execute()
-                    profileLiveData.postValue(response.body())
-                } catch (e: Exception) {
-                    Log.d("error", e.message.toString())
-                    isErrorLiveData.postValue(e.message)
-                }
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                val response = ApiHelper.getProfile().execute()
+                profileLiveData.postValue(response.body())
+            } catch (e: Exception) {
+                Log.d("error", e.message.toString())
+                isErrorLiveData.postValue(e.message)
             }
         }
     }

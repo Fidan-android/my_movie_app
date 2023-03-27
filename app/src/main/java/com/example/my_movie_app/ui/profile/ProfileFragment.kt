@@ -30,6 +30,7 @@ import com.example.my_movie_app.copyInputStreamToFile
 import com.example.my_movie_app.databinding.FragmentProfileBinding
 import com.example.my_movie_app.login.LoginActivity
 import com.example.my_movie_app.toIso
+import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -94,20 +95,23 @@ class ProfileFragment : Fragment() {
             if (it != null) {
                 binding.nameProfile.text =
                     it.firstName + " " + it.name + " " + (it.lastName?.first() ?: "")
-            }
-            Glide
-                .with(requireContext())
-                .load(
-                    GlideUrl(
-                        "http://n931333e.beget.tech/api/v3/img/" + it.imageUrl,
-                        LazyHeaders.Builder()
-                            .addHeader("User-Agent", "Mozilla/5.0")
-                            .build()
+                Glide
+                    .with(requireContext())
+                    .load(
+                        GlideUrl(
+                            "http://n931333e.beget.tech/api/v3/img/" + it.imageUrl,
+                            LazyHeaders.Builder()
+                                .addHeader("User-Agent", "Mozilla/5.0")
+                                .build()
+                        )
                     )
-                )
-                .centerCrop()
-                .error(R.drawable.logo)
-                .into(binding.imageProfile)
+                    .centerCrop()
+                    .error(R.drawable.logo)
+                    .into(binding.imageProfile)
+            }
+        }
+        viewModel.onGetErrorMessage().observe(viewLifecycleOwner) {
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
         viewModel.onLoadData()
     }

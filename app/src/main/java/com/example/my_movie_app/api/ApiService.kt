@@ -17,7 +17,7 @@ interface ApiService {
     @GET("account/")
     fun getProfile(): Call<ProfileResponse>
 
-    @POST("account-image/")
+    @POST("account/image/")
     fun updateImageProfile(
         @Body body: UpdateImageProfileModel
     ): Call<Any>

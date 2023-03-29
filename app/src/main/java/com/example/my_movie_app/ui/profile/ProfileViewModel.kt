@@ -20,17 +20,13 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
     override fun changeImageProfile(path: String) {
         isErrorLiveData.postValue(Base64.getEncoder().encodeToString(File(path).readBytes()))
         MainScope().launch(Dispatchers.IO) {
-            val result = ApiHelper.updateImageProfile(
+            ApiHelper.updateImageProfile(
                 UpdateImageProfileModel(
                     Base64.getEncoder().encodeToString(File(path).readBytes())
                 )
             ).execute()
-
-            if (!result.isSuccessful) {
-                isErrorLiveData.postValue(result.message())
-            } else {
-                onLoadData()
-            }
+        }.invokeOnCompletion {
+            onLoadData()
         }
     }
 

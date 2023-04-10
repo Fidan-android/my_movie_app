@@ -219,11 +219,11 @@
                         android:textSize="14sp"
                         app:drawableTint="@color/material_color_cyan_800" />
 
-                    <com.google.android.material.card.MaterialCardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:background="@drawable/bg_stars"
+                        app:cardBackgroundColor="@color/White_80"
                         app:cardElevation="6dp"
                         app:cardUseCompatPadding="true"
                         app:contentPaddingLeft="10dp"
@@ -232,8 +232,8 @@
                         app:layout_anchorGravity="bottom|end">
 
                         <androidx.appcompat.widget.AppCompatImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
                             android:layout_gravity="start|center_vertical"
                             android:tint="@color/material_color_yellow_600"
                             app:srcCompat="@drawable/ic_star" />
@@ -245,8 +245,8 @@
                             android:layout_gravity="center_vertical|end"
                             android:layout_marginStart="30dp"
                             android:textColor="@color/Black_70"
-                            android:textSize="20sp" />
-                    </com.google.android.material.card.MaterialCardView>
+                            android:textSize="14sp" />
+                    </androidx.cardview.widget.CardView>
                 </FrameLayout>
             </LinearLayout>
 

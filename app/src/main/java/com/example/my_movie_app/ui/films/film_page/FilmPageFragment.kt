@@ -127,13 +127,13 @@ class FilmPageFragment : Fragment() {
                 binding.videoLayout.isVisible = true
 
                 val url = it.videoItems.first().url
-                if (url.contains("youtube")) {
+                if (url.startsWith("https://www.youtube.com/")) {
                     binding.webView.isVisible = true
                     binding.videoView.isVisible = false
                     binding.webView.apply {
                         settings.javaScriptEnabled = true
                         loadData(
-                            initIframeVideo("https://www.youtube.com/embed/${url.substringAfter("v=")}?autoplay=1&vq=small"),
+                            initIframeVideo("https://www.youtube.com/embed/${url.substringAfter("v/")}?autoplay=1&vq=small"),
                             "text/html",
                             "utf-8"
                         )

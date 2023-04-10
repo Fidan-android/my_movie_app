@@ -22,4 +22,10 @@
     <string name="not_network_connect">Нет интернет соединения</string>
     <string name="title_search">Search</string>
     <string name="title_sort">Сортировка</string>
+    <string name="by_alphabet">По алфавиту</string>
+    <string name="by_year">По году</string>
+    <string name="by_rating">По рейтингу</string>
+    <string name="sorting_films">Сортировка фильмов</string>
+    <string name="clear_sorting"><u>Очистить соортировку</u></string>
+    <string name="sort_type">sort_type</string>
 </resources>

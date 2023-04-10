@@ -3,6 +3,8 @@ package com.example.my_movie_app.ui.films
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -18,6 +20,8 @@ import com.example.my_movie_app.api.models.FilmModel
 import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentFilmsBinding
 import com.example.my_movie_app.ui.adapters.RenderAdapter
+import com.example.my_movie_app.ui.dialogs.ISortingFilmsDialog
+import com.example.my_movie_app.ui.dialogs.SortingFilmsDialog
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -82,7 +86,14 @@ class FilmsFragment : Fragment() {
                 return false
             }
             R.id.action_sort -> {
+                SortingFilmsDialog(object : ISortingFilmsDialog {
+                    override fun onChangeSortingParam(param: Int) {
+                        Log.d("param", param.toString())
+                        viewModel.onSortData(param)
+                    }
 
+                }).show(parentFragmentManager, SortingFilmsDialog::class.java.name)
+                return false
             }
         }
         searchView?.setOnQueryTextListener(queryTextListener)
@@ -119,6 +130,10 @@ class FilmsFragment : Fragment() {
         }
         binding.rvFilms.addOnScrollListener(paginationListener!!)
         binding.rvFilms.adapter = adapter
+
+        val edit = requireContext().getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).edit()
+        edit.remove(getString(R.string.sort_type))
+        edit.apply()
     }
 
     override fun onStart() {
@@ -141,6 +156,15 @@ class FilmsFragment : Fragment() {
         }
         viewModel.onGetData().observe(viewLifecycleOwner) {
             adapter.onUpdateItems(it)
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            binding.swipeRefresh.isRefreshing = false
+            viewModel.onRefreshData()
+
+            val edit = requireContext().getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE).edit()
+            edit.remove(getString(R.string.sort_type))
+            edit.apply()
         }
     }
 

@@ -47,4 +47,6 @@ data class FilmModel(
     val completed: Boolean? = null,
     val lastSync: String? = null,
     val premiereRu: String? = null,
-)
+): Comparable<FilmModel> {
+    override fun compareTo(other: FilmModel) = nameRu!!.compareTo(other.nameRu!!)
+}

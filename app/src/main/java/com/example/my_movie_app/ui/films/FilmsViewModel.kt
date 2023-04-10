@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.models.FilmModel
 import kotlinx.coroutines.Dispatchers
@@ -97,5 +98,54 @@ class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
             filmsLiveData.value = mutableListOf()
             onLoadData()
         }
+    }
+
+    override fun onRefreshData() {
+        countTotal = 0
+        minusMonth = 0
+        filmsLiveData.value = mutableListOf()
+        onLoadData()
+    }
+
+    override fun onSortData(param: Int) {
+        if (cashesFilms.isEmpty()) {
+            cashesFilms = filmsLiveData.value ?: mutableListOf()
+        }
+        val list = when (param) {
+            R.id.sort_alphabet -> {
+                filmsLiveData.value?.sortedWith { first, second ->
+                    first.nameRu!!.compareTo(
+                        second.nameRu!!
+                    )
+                }?.toMutableList()
+            }
+            R.id.sort_year -> {
+                filmsLiveData.value?.sortedWith { first, second ->
+                    first.year!! - second.year!!
+                }
+            }
+            R.id.sort_rating -> {
+                filmsLiveData.value?.sortedWith { first, second ->
+                    if (first.ratingImdb == null) {
+                        return@sortedWith -1
+                    }
+
+                    if (second.ratingImdb == null) {
+                        return@sortedWith -1
+                    }
+
+                    if (first.ratingImdb != second.ratingImdb) {
+                        return@sortedWith (first.ratingImdb - second.ratingImdb).toInt()
+                    }
+
+                    return@sortedWith 0
+                }
+            }
+            else -> {
+                cashesFilms
+            }
+        }?.toMutableList()
+        filmsLiveData.value = mutableListOf()
+        filmsLiveData.value = list ?: mutableListOf()
     }
 }

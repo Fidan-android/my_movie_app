@@ -7,4 +7,6 @@ interface IFilmsViewModel<T> : IBaseViewModel<T> {
     fun onGetTotalCount(): Int
     fun onIsUpdate(): Boolean
     fun onFindData(findString: String)
+    fun onRefreshData()
+    fun onSortData(param: Int)
 }

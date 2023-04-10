@@ -3,7 +3,6 @@ package com.example.my_movie_app.api
 import com.example.my_movie_app.api.models.UpdateImageProfileModel
 import com.example.planner.models.LoginRequest
 import com.example.planner.models.RegistrationRequest
-import okhttp3.MultipartBody
 
 object ApiHelper {
     private val apiService = ApiManager.apiService
@@ -19,6 +18,8 @@ object ApiHelper {
     fun getFilms(year: Int, month: String) = cinemaService.getFilms(year, month)
 
     fun getFilmById(filmId: Int) = cinemaService.getFilmById(filmId)
+
+    fun getFilteredFilms(keyword: String) = cinemaService.getFilteredFilms(keyword)
 
     fun getVideosByFilm(filmId: Int) = cinemaService.getVideosByFilm(filmId)
 

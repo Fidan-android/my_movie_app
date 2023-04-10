@@ -39,9 +39,7 @@ class FilmsFragment : Fragment() {
                 override fun onClick(position: Int) {
                     NavHostFragment.findNavController(this@FilmsFragment)
                         .navigate(
-                            FilmsFragmentDirections.actionFilmsFragmentToFilmPageFragment(
-                                viewModel.onGetData().value?.getOrNull(position)?.kinopoiskId ?: 0
-                            ),
+                            FilmsFragmentDirections.actionFilmsFragmentToFilmPageFragment(position),
                             NavOptions.Builder().setRestoreState(true).build()
                         )
                 }

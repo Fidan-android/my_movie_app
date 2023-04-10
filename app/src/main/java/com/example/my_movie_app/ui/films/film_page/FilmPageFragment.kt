@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
-import androidx.navigation.fragment.navArgs
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -20,6 +20,8 @@ import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.databinding.FragmentFilmPageBinding
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FilmPageFragment : Fragment() {
 
@@ -52,7 +54,7 @@ class FilmPageFragment : Fragment() {
         viewModel.onSaveFilmId(args.filmId)
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled", "SimpleDateFormat")
     override fun onStart() {
         ApiManager.setConnectCallback(requireContext(), object : IInternetConnected {
             override fun onConnect() {
@@ -101,10 +103,18 @@ class FilmPageFragment : Fragment() {
             binding.authorFilm.text =
                 it.countries?.joinToString(", ") { country -> country.country }
                     ?.plus(", " + it.year)
+
+            val minutes = if (it.filmLength?.contains(':') == false) {
+                it.filmLength.toInt()
+            } else {
+                SimpleDateFormat("mm").format(Date(SimpleDateFormat("HH:mm").parse(it.filmLength.toString())!!.time))
+                    .toInt()
+            }
+
             binding.timeFilm.text =
-                if (it.filmLength == null) "" else if (it.filmLength < 60) it.filmLength.toString()
-                    .plus("мин") else (it.filmLength / 60).toString()
-                    .plus("ч ") + (it.filmLength % 60).toString().plus("мин")
+                if (it.filmLength == null) "" else if (minutes < 60) minutes.toString()
+                    .plus("мин") else (minutes / 60).toString()
+                    .plus("ч ") + (minutes % 60).toString().plus("мин")
             binding.description.text = it.description
             binding.ratingFilm.text =
                 it.ratingKinopoisk?.toString() ?: it.ratingImdb?.toString() ?: "0.0"
@@ -114,7 +124,7 @@ class FilmPageFragment : Fragment() {
             binding.videoView.isGone = it.videoItems.isEmpty()
 
             if (it.videoItems.isNotEmpty()) {
-                binding.videoLayout.isVisible =  true
+                binding.videoLayout.isVisible = true
 
                 val url = it.videoItems.first().url
                 if (url.contains("youtube")) {

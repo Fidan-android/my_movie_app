@@ -2,6 +2,7 @@ package com.example.my_movie_app.api.models
 
 data class FilmModel(
     val kinopoiskId: Int? = null,
+    val filmId: Int? = null,
     val imdbId: String? = null,
     val nameRu: String? = null,
     val nameEn: String? = null,
@@ -27,7 +28,7 @@ data class FilmModel(
     val ratingRfCritics: Double? = null,
     val ratingRfCriticsVoteCount: Int? = null,
     val webUrl: String? = null,
-    val filmLength: Int? = null,
+    val filmLength: String? = null,
     val startYear: Int? = null,
     val endYear: Int? = null,
     val slogan: String? = null,

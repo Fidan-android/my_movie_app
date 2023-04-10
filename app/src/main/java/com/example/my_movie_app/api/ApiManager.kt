@@ -53,7 +53,7 @@ object ApiManager {
                 .create()
             cinemaRetrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl("https://kinopoiskapiunofficial.tech/api/v2.2/")
+                .baseUrl("https://kinopoiskapiunofficial.tech/api/")
                 .client(initOkHttpClient())
                 .build()
         }

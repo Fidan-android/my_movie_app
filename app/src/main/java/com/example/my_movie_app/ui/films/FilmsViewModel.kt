@@ -4,16 +4,13 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.my_movie_app.IBaseViewModel
 import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.models.FilmModel
-import com.example.my_movie_app.api.models.FilmsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
 
@@ -66,23 +63,38 @@ class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
                 minusMonth++
                 isUpdate = false
             } catch (e: Exception) {
-                Log.d("error", e.message.toString())
+                Log.e("error", e.stackTraceToString())
                 isErrorLiveData.postValue(e.message)
             }
         }
     }
 
     override fun onFindData(findString: String) {
+        countTotal = 0
         if (findString.isNotEmpty()) {
-            if (cashesFilms.isEmpty()) {
-                cashesFilms = filmsLiveData.value ?: mutableListOf()
+            isLoaded = false
+            try {
+                MainScope().launch(Dispatchers.IO) {
+                    val response = ApiHelper.getFilteredFilms(findString).execute()
+
+                    isLoaded = true
+                    if (response.isSuccessful) {
+                        response.body()!!.films.let {
+                            filmsLiveData.postValue(it)
+                        }
+                    } else {
+                        when (response.code()) {
+                            401 -> isErrorLiveData.postValue("Проблема с api-key")
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+                Log.e("error", ex.stackTraceToString())
+                isLoaded = true
             }
-            val temp = cashesFilms.filter { item -> item.nameRu?.contains(findString, true) == true }.toMutableList()
-            filmsLiveData.value = temp
         } else {
             minusMonth = 0
-            filmsLiveData.value = cashesFilms
-            cashesFilms.clear()
+            filmsLiveData.value = mutableListOf()
             onLoadData()
         }
     }

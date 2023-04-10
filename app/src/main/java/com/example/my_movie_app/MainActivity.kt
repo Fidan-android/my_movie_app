@@ -1,75 +1,102 @@
 package com.example.my_movie_app
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.Gravity
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.*
+import com.example.my_movie_app.api.ApiManager
+import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
+    private var selectedItem = -1
+    private val navHostFragment by lazy {
+        supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
-        val layoutDrawer = binding.drawerLayout
-        val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_films,
-                R.id.nav_category,
-                R.id.nav_cinema,
-                R.id.nav_profile
-            ), layoutDrawer
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (Properties.isHome) {
-                    findNavController(R.id.nav_host_fragment).popBackStack()
-                    Properties.isHome = false
-                } else {
-                    binding.drawerLayout.openDrawer(GravityCompat.START)
+        navHostFragment.navController.graph =
+            navHostFragment.navController.navInflater.inflate(R.navigation.nav_graph)
+        NavigationUI.setupWithNavController(binding.bottomMenu, navHostFragment.navController)
+        binding.bottomMenu.setOnItemSelectedListener { item ->
+            if (selectedItem == -1 || item.itemId != selectedItem) {
+                when (item.itemId) {
+                    R.id.filmsFragment -> {
+                        navHostFragment.navController.navigate(
+                            R.id.filmsFragment,
+                            Bundle(),
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.filmsFragment, true)
+                                .build()
+                        )
+                    }
+                    R.id.cinemaFragment -> {
+                        navHostFragment.navController.navigate(
+                            R.id.cinemaFragment,
+                            Bundle(),
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.cinemaFragment, true)
+                                .build()
+                        )
+                    }
+                    R.id.profileFragment -> {
+                        navHostFragment.navController.navigate(
+                            R.id.profileFragment,
+                            Bundle(),
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.profileFragment, true)
+                                .build()
+                        )
+                    }
                 }
-                return true
-            }
-            R.id.cinemaMap -> {
-                Properties.isHome = true
-                findNavController(R.id.nav_host_fragment)
-                    .navigate(R.id.action_nav_cinema_to_mapFragment)
-                return true
+                selectedItem = item.itemId
+                return@setOnItemSelectedListener true
+            } else {
+                return@setOnItemSelectedListener false
             }
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        ApiManager.setConnectCallback(this, object : IInternetConnected {
+            override fun onConnect() {
+
+            }
+
+            override fun onLost() {
+                Snackbar.make(
+                    _binding?.root!!,
+                    getString(R.string.not_network_connect),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        })
+        super.onStart()
+        supportFragmentManager.addOnBackStackChangedListener {
+            binding.bottomMenu.menu.getItem(0).isChecked = true
+        }
+    }
+
+    override fun onStop() {
+        ApiManager.unsetConnectCallback()
+        super.onStop()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        supportActionBar?.show()
+        selectedItem = -1
     }
 }

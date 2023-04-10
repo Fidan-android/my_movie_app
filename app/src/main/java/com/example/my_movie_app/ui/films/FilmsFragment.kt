@@ -1,16 +1,17 @@
 package com.example.my_movie_app.ui.films
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.my_movie_app.MainActivity
+import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.api.models.FilmModel
@@ -19,10 +20,14 @@ import com.example.my_movie_app.databinding.FragmentFilmsBinding
 import com.example.my_movie_app.ui.adapters.RenderAdapter
 import com.google.android.material.snackbar.Snackbar
 
+
 class FilmsFragment : Fragment() {
 
     private var _binding: FragmentFilmsBinding? = null
     private val binding get() = _binding!!
+    private var searchView: SearchView? = null
+    private var queryTextListener: SearchView.OnQueryTextListener? = null
+    private var paginationListener: PaginationListener? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this)[FilmsViewModel::class.java]
@@ -34,7 +39,7 @@ class FilmsFragment : Fragment() {
                 override fun onClick(position: Int) {
                     NavHostFragment.findNavController(this@FilmsFragment)
                         .navigate(
-                            FilmsFragmentDirections.actionNavFilmsToFilmPageFragment(
+                            FilmsFragmentDirections.actionFilmsFragmentToFilmPageFragment(
                                 viewModel.onGetData().value?.getOrNull(position)?.kinopoiskId ?: 0
                             ),
                             NavOptions.Builder().setRestoreState(true).build()
@@ -43,19 +48,64 @@ class FilmsFragment : Fragment() {
             })
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchManager =
+            requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
+        if (searchItem != null) {
+            searchView = searchItem.actionView as SearchView
+        }
+        if (searchView != null) {
+            searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+            queryTextListener = object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String): Boolean {
+                    binding.rvFilms.removeOnScrollListener(paginationListener!!)
+                    viewModel.onFindData(newText)
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String) = true
+            }
+            searchView!!.setOnQueryTextListener(queryTextListener)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_search -> {
+                return false
+            }
+            R.id.action_sort -> {
+
+            }
+        }
+        searchView?.setOnQueryTextListener(queryTextListener)
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFilmsBinding.inflate(layoutInflater)
+        (requireActivity() as MainActivity).setSupportActionBar(binding.toolbarFilms)
+        (requireActivity() as MainActivity).supportActionBar?.setTitle(R.string.title_films)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.rvFilms.itemAnimator = null
-        binding.rvFilms.addOnScrollListener(object :
+        paginationListener = object :
             PaginationListener(binding.rvFilms.layoutManager as GridLayoutManager) {
             override fun getTotalCount(): Int {
                 return viewModel.onGetTotalCount()
@@ -68,7 +118,8 @@ class FilmsFragment : Fragment() {
             override fun loadMoreItems() {
                 viewModel.onLoadData()
             }
-        })
+        }
+        binding.rvFilms.addOnScrollListener(paginationListener!!)
         binding.rvFilms.adapter = adapter
     }
 

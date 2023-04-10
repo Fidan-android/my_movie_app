@@ -20,6 +20,4 @@
     <string name="map">Карта</string>
     <string name="empty_loves_films">В разделе "Понравившиеся" еще ничего нет, добавьте сюда свои любимые фильмы или сериалы</string>
     <string name="not_network_connect">Нет интернет соединения</string>
-    <string name="title_search">Search</string>
-    <string name="title_sort">Сортировка</string>
 </resources>

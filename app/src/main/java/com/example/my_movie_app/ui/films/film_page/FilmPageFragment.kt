@@ -1,18 +1,16 @@
 package com.example.my_movie_app.ui.films.film_page
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
-import android.widget.MediaController
+import androidx.navigation.fragment.navArgs
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
@@ -105,8 +103,8 @@ class FilmPageFragment : Fragment() {
                     ?.plus(", " + it.year)
             binding.timeFilm.text =
                 if (it.filmLength == null) "" else if (it.filmLength < 60) it.filmLength.toString()
-                    .plus("min") else (it.filmLength / 60).toString()
-                    .plus("h ") + (it.filmLength % 60).toString().plus("min")
+                    .plus("мин") else (it.filmLength / 60).toString()
+                    .plus("ч ") + (it.filmLength % 60).toString().plus("мин")
             binding.description.text = it.description
             binding.ratingFilm.text =
                 it.ratingKinopoisk?.toString() ?: it.ratingImdb?.toString() ?: "0.0"

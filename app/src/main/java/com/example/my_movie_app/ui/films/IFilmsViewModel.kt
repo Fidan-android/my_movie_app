@@ -6,4 +6,5 @@ interface IFilmsViewModel<T> : IBaseViewModel<T> {
     fun onIsLoaded(): Boolean
     fun onGetTotalCount(): Int
     fun onIsUpdate(): Boolean
+    fun onFindData(findString: String)
 }

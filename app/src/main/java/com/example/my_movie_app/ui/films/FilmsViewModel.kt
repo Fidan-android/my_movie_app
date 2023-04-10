@@ -26,6 +26,7 @@ class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
         onLoadData()
     }
 
+    private var cashesFilms: MutableList<FilmModel> = mutableListOf()
     private var filmsLiveData: MutableLiveData<MutableList<FilmModel>> =
         MutableLiveData<MutableList<FilmModel>>()
     private val isErrorLiveData: MutableLiveData<String> = MutableLiveData()
@@ -68,6 +69,21 @@ class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
                 Log.d("error", e.message.toString())
                 isErrorLiveData.postValue(e.message)
             }
+        }
+    }
+
+    override fun onFindData(findString: String) {
+        if (findString.isNotEmpty()) {
+            if (cashesFilms.isEmpty()) {
+                cashesFilms = filmsLiveData.value ?: mutableListOf()
+            }
+            val temp = cashesFilms.filter { item -> item.nameRu?.contains(findString, true) == true }.toMutableList()
+            filmsLiveData.value = temp
+        } else {
+            minusMonth = 0
+            filmsLiveData.value = cashesFilms
+            cashesFilms.clear()
+            onLoadData()
         }
     }
 }

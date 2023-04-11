@@ -100,6 +100,7 @@ class FilmPageFragment : Fragment() {
                 .into(binding.logoFilm)
 
             binding.titleFilm.text = it.nameRu
+            binding.titleFilm.isSelected = true
             binding.authorFilm.text =
                 it.countries?.joinToString(", ") { country -> country.country }
                     ?.plus(", " + it.year)
@@ -112,9 +113,13 @@ class FilmPageFragment : Fragment() {
             }
 
             binding.timeFilm.text =
-                if (it.filmLength == null) "" else if (minutes < 60) minutes.toString()
-                    .plus("мин") else (minutes / 60).toString()
-                    .plus("ч ") + (minutes % 60).toString().plus("мин")
+                when {
+                    it.filmLength == null -> ""
+                    minutes < 60 -> minutes.toString()
+                        .plus("мин")
+                    else -> (minutes / 60).toString()
+                        .plus("ч ") + (minutes % 60).toString().plus("мин")
+                }
             binding.description.text = it.description
             binding.ratingFilm.text =
                 it.ratingKinopoisk?.toString() ?: it.ratingImdb?.toString() ?: "0.0"

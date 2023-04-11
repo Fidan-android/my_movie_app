@@ -1,5 +1,6 @@
 package com.example.my_movie_app.ui.adapters
 
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.models.CategoryModel
 import com.example.my_movie_app.api.models.CinemaModel
+import com.example.my_movie_app.api.models.FavouriteFilmModel
 import com.example.my_movie_app.api.models.FilmModel
 
 
@@ -33,8 +35,8 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
             0 -> FilmViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.film_cell, parent, false)
             )
-            1 -> CategoryViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.category_cell, parent, false)
+            1 -> FavouriteFilmsViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.film_cell, parent, false)
             )
             2 -> CinemaViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.cinema_cell, parent, false)
@@ -49,8 +51,8 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
                 renderList[position] as FilmModel,
                 delegate::onClick
             )
-            is CategoryViewHolder -> holder.onBind(
-                renderList[position] as CategoryModel,
+            is FavouriteFilmsViewHolder -> holder.onBind(
+                renderList[position] as FavouriteFilmModel,
                 delegate::onClick
             )
             is CinemaViewHolder -> holder.onBind(
@@ -79,7 +81,6 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
 
         open fun onBind(model: FilmModel, onClick: (Int) -> Unit) {
             nameFilm.text = model.nameRu
-            nameFilm.isSelected = true
             Glide
                 .with(itemView.context)
                 .load(model.posterUrlPreview)
@@ -93,15 +94,24 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
         }
     }
 
-    open class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open class FavouriteFilmsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val rootView: LinearLayout = itemView.findViewById(R.id.rootView)
-        private val categoryName: AppCompatTextView = itemView.findViewById(R.id.categoryName)
+        private val logoFilm: AppCompatImageView = itemView.findViewById(R.id.logoFilm)
+        private val nameFilm: AppCompatTextView = itemView.findViewById(R.id.nameFilm)
 
-        open fun onBind(model: CategoryModel, onClick: (Int) -> Unit) {
-            categoryName.text = model.categoryName
+        open fun onBind(model: FavouriteFilmModel, onClick: (Int) -> Unit) {
+            nameFilm.text = model.nameRu
+            nameFilm.gravity = Gravity.CENTER
+            Glide
+                .with(itemView.context)
+                .load(model.posterUrlPreview)
+                .centerCrop()
+                .error(R.drawable.logo)
+                .into(logoFilm)
+
             rootView.setOnClickListener {
-                onClick(adapterPosition)
+                onClick(model.kinopoiskId ?: model.filmId ?: 0)
             }
         }
     }

@@ -19,8 +19,7 @@
             android:layout_height="250dp"
             android:fitsSystemWindows="true"
             android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/bg" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
             android:id="@+id/videoLayout"
@@ -53,6 +52,31 @@
                 app:srcCompat="@drawable/ic_play_video" />
 
         </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:tint="@color/material_color_cyan_800"
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/likesFilm"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:focusable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/state_favourite_btn" />
 
         <LinearLayout
             android:id="@+id/contentLayout"

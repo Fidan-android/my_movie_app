@@ -8,4 +8,5 @@ interface IFilmPageViewModel<T> : IBaseViewModel<T> {
     fun onSaveFilmId(newFilmId: Int)
     fun onProgressBar(): MutableLiveData<Boolean>
     fun onGetVideos(): MutableLiveData<FilmVideoModel>
+    fun onFavouriteMovie(isFavourite: Boolean)
 }

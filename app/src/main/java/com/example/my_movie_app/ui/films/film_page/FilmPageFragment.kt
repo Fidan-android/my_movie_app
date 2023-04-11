@@ -2,6 +2,7 @@ package com.example.my_movie_app.ui.films.film_page
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +11,13 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.MainActivity
+import com.example.my_movie_app.Properties
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
@@ -22,12 +25,14 @@ import com.example.my_movie_app.databinding.FragmentFilmPageBinding
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 class FilmPageFragment : Fragment() {
 
     private var _binding: FragmentFilmPageBinding? = null
     private val binding get() = _binding!!
     private val args: FilmPageFragmentArgs by navArgs()
+    private var isChecked: Boolean = false
 
     private val viewModel by lazy {
         ViewModelProvider(this)[FilmPageViewModel::class.java]
@@ -52,6 +57,11 @@ class FilmPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.onSaveFilmId(args.filmId)
+
+        if (Properties.favouriteMovies.value?.any { item -> item.kinopoiskId == args.filmId || item.filmId == args.filmId } == true) {
+            isChecked = !isChecked
+            binding.likesFilm.isActivated = isChecked
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled", "SimpleDateFormat")
@@ -163,6 +173,16 @@ class FilmPageFragment : Fragment() {
                 binding.contentLayout.visibility = View.VISIBLE
                 binding.progressContent.visibility = View.GONE
             }
+        }
+
+        binding.likesFilm.setOnClickListener {
+            isChecked = !isChecked
+            binding.likesFilm.isActivated = isChecked
+            viewModel.onFavouriteMovie(isChecked)
+        }
+
+        binding.btnBack.setOnClickListener {
+            NavHostFragment.findNavController(this@FilmPageFragment).popBackStack()
         }
     }
 

@@ -16,18 +16,27 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.App
 import com.example.my_movie_app.R
+import com.example.my_movie_app.api.models.FavouriteFilmModel
+import com.example.my_movie_app.api.models.FilmModel
+import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.copyInputStreamToFile
 import com.example.my_movie_app.databinding.FragmentProfileBinding
 import com.example.my_movie_app.login.LoginActivity
 import com.example.my_movie_app.toIso
+import com.example.my_movie_app.ui.adapters.RenderAdapter
+import com.example.my_movie_app.ui.films.FilmsFragmentDirections
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
 import java.io.InputStream
@@ -42,6 +51,19 @@ class ProfileFragment : Fragment() {
     }
     private var galleryPermissionResultLauncher: ActivityResultLauncher<String>? = null
     private var openPictureResultLauncher: ActivityResultLauncher<String>? = null
+    private val adapter: RenderAdapter<FavouriteFilmModel> by lazy {
+        RenderAdapter(
+            RenderViewType.FavouriteFilmsViewType.viewType,
+            object : RenderAdapter.IItemClickListener {
+                override fun onClick(position: Int) {
+                    NavHostFragment.findNavController(this@ProfileFragment)
+                        .navigate(
+                            ProfileFragmentDirections.actionProfileFragmentToFilmPageFragment(position),
+                            NavOptions.Builder().setRestoreState(true).build()
+                        )
+                }
+            })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +84,13 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.favoriteMoviesRv.itemAnimator = null
+        binding.favoriteMoviesRv.adapter = adapter
     }
 
     @SuppressLint("SetTextI18n")
@@ -113,6 +142,16 @@ class ProfileFragment : Fragment() {
             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
         viewModel.onLoadData()
+
+        com.example.my_movie_app.Properties.favouriteMovies.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                adapter.onUpdateItems(it)
+                binding.emptyMessage.isGone = true
+            } else {
+                adapter.onUpdateItems(mutableListOf())
+                binding.emptyMessage.isVisible = true
+            }
+        }
     }
 
     override fun onDestroy() {

@@ -1,10 +1,13 @@
 package com.example.my_movie_app.ui.films.film_page
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.my_movie_app.Properties
 import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.models.FilmModel
 import com.example.my_movie_app.api.models.FilmVideoModel
+import com.example.my_movie_app.models.FavouriteMovieRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -48,6 +51,28 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
             } else {
                 isErrorLiveData.postValue(videosResponse.message())
             }
+        }
+    }
+
+    override fun onFavouriteMovie(isFavourite: Boolean) {
+        try {
+            MainScope().launch(Dispatchers.IO) {
+                val response = ApiHelper.saveFavouriteMovie(
+                    FavouriteMovieRequest(
+                        filmLiveData.value?.kinopoiskId,
+                        filmLiveData.value?.filmId,
+                        filmLiveData.value?.nameRu,
+                        filmLiveData.value?.posterUrlPreview,
+                        isFavourite
+                    )
+                ).execute()
+
+                if (response.isSuccessful) {
+                    Properties.favouriteMovies.postValue(response.body()?.favourites ?: mutableListOf())
+                }
+            }
+        } catch (ex: Exception) {
+            Log.e("Error", ex.printStackTrace().toString())
         }
     }
 }

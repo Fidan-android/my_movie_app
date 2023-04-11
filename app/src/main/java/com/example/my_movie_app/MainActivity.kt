@@ -1,18 +1,26 @@
 package com.example.my_movie_app
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
+import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +36,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        try {
+            MainScope().launch(Dispatchers.IO) {
+                val response = ApiHelper.getFavouriteMovies().execute()
+
+                if (response.isSuccessful) {
+                    Properties.favouriteMovies.postValue(response.body()?.favourites ?: mutableListOf())
+                }
+            }
+        } catch (ex: Exception) {
+            Log.e("Error", ex.printStackTrace().toString())
+        }
+
         navHostFragment.navController.graph =
             navHostFragment.navController.navInflater.inflate(R.navigation.nav_graph)
         NavigationUI.setupWithNavController(binding.bottomMenu, navHostFragment.navController)
@@ -87,6 +108,14 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         supportFragmentManager.addOnBackStackChangedListener {
             binding.bottomMenu.menu.getItem(0).isChecked = true
+        }
+
+        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.filmPageFragment) {
+                binding.bottomMenu.isGone = true
+            } else {
+                binding.bottomMenu.isVisible = true
+            }
         }
     }
 

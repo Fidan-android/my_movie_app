@@ -7,7 +7,7 @@ data class FilmModel(
     val nameRu: String? = null,
     val nameEn: String? = null,
     val nameOriginal: String? = null,
-    val year: Int? = null,
+    val year: String? = null,
     val posterUrl: String? = null,
     val posterUrlPreview: String? = null,
     val coverUrl: String? = null,

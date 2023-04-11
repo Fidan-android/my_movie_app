@@ -23,7 +23,6 @@ class CustomDiffUtil<T>(
     override fun getNewListSize(): Int = newProductList.size
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        Log.d("viewType", viewType.toString())
         return when (viewType) {
             0 ->
                 (oldProductList[oldItemPosition] as FilmModel).kinopoiskId !=

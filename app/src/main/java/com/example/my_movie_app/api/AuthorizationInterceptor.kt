@@ -18,7 +18,6 @@ class AuthorizationInterceptor : Interceptor {
             App.appContext.getString(R.string.app_name),
             MODE_PRIVATE
         ).getString("token", "") ?: ""
-        Log.d("token", token)
         try {
             val newRequest = request
                 .newBuilder()

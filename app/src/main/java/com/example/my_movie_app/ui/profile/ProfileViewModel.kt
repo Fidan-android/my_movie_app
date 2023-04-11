@@ -39,7 +39,6 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
                 val response = ApiHelper.getProfile().execute()
                 profileLiveData.postValue(response.body())
             } catch (e: Exception) {
-                Log.d("error", e.message.toString())
                 isErrorLiveData.postValue(e.message)
             }
         }

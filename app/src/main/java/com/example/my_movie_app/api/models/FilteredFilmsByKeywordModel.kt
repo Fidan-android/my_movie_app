@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class FilteredFilmsByKeywordModel(
     @SerializedName("keyword") val keyword: String,
-    @SerializedName("pagesCount") val pages: Int,
-    @SerializedName("searchFilmsCountResult") val filmsCount: Int,
+    @SerializedName("pagesCount") val pages: Int? = null,
+    @SerializedName("searchFilmsCountResult") val filmsCount: Int? = null,
     @SerializedName("films") val films: MutableList<FilmModel>
 )

@@ -89,7 +89,6 @@ class FilmsFragment : Fragment() {
             R.id.action_sort -> {
                 SortingFilmsDialog(object : ISortingFilmsDialog {
                     override fun onChangeSortingParam(param: Int) {
-                        Log.d("param", param.toString())
                         viewModel.onSortData(param)
                     }
 

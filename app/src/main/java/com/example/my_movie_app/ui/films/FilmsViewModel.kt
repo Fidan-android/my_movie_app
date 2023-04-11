@@ -121,7 +121,11 @@ class FilmsViewModel : ViewModel(), IFilmsViewModel<MutableList<FilmModel>> {
             }
             R.id.sort_year -> {
                 filmsLiveData.value?.sortedWith { first, second ->
-                    first.year!! - second.year!!
+                    if (first.year?.toIntOrNull() == null || second.year?.toIntOrNull() == null) {
+                        0
+                    } else {
+                        first.year.toInt() - second.year.toInt()
+                    }
                 }
             }
             R.id.sort_rating -> {

@@ -81,6 +81,7 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
 
         open fun onBind(model: FilmModel, onClick: (Int) -> Unit) {
             nameFilm.text = model.nameRu
+            nameFilm.isSelected = true
             Glide
                 .with(itemView.context)
                 .load(model.posterUrlPreview)

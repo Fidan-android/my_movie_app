@@ -1,36 +1,39 @@
-package com.example.my_movie_app.ui.map
+package com.example.my_movie_app.ui.genres
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_app.IBaseViewModel
 import com.example.my_movie_app.api.ApiHelper
-import com.example.my_movie_app.api.models.CinemaModel
+import com.example.my_movie_app.api.models.FilterResponse
+import com.example.my_movie_app.api.models.GenreModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
-class MapViewModel : ViewModel(), IBaseViewModel<MutableList<CinemaModel>> {
+class GenreViewModel : ViewModel(), IBaseViewModel<MutableList<GenreModel>> {
 
     init {
         onLoadData()
     }
 
-    private val cinemasLiveData: MutableLiveData<MutableList<CinemaModel>> = MutableLiveData()
+    private val cinemasLiveData: MutableLiveData<MutableList<GenreModel>> = MutableLiveData()
     private val isErrorLiveData: MutableLiveData<String> = MutableLiveData()
 
     override fun onGetData() = cinemasLiveData
     override fun onGetErrorMessage() = isErrorLiveData
 
     override fun onLoadData() {
-        GlobalScope.launch(Dispatchers.IO) {
+        MainScope().launch(Dispatchers.IO) {
             try {
-                val response = ApiHelper.getCinema()
-                if (response.message == null) {
-                    response.cinemas.let {
+                val response = ApiHelper.getGenres().execute()
+                if (response.isSuccessful) {
+                    val body = response.body() as FilterResponse
+                    body.genres.let {
                         cinemasLiveData.postValue(it)
                     }
                 } else {
-                    response.message.let {
+                    response.message().let {
                         isErrorLiveData.postValue(it)
                     }
                 }

@@ -8,9 +8,9 @@
         android:title="@string/title_films" />
 
     <item
-        android:id="@+id/cinemaFragment"
+        android:id="@+id/genreFragment"
         android:icon="@drawable/ic_award"
-        android:title="@string/title_cinema" />
+        android:title="@string/title_genre" />
 
     <item
         android:id="@+id/profileFragment"

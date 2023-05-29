@@ -64,12 +64,12 @@ class MainActivity : AppCompatActivity() {
                                 .build()
                         )
                     }
-                    R.id.cinemaFragment -> {
+                    R.id.genreFragment -> {
                         navHostFragment.navController.navigate(
-                            R.id.cinemaFragment,
+                            R.id.genreFragment,
                             Bundle(),
                             NavOptions.Builder()
-                                .setPopUpTo(R.id.cinemaFragment, true)
+                                .setPopUpTo(R.id.genreFragment, true)
                                 .build()
                         )
                     }

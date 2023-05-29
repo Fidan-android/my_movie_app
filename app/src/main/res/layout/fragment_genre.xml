@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.cinema.CinemaFragment">
+    tools:context=".ui.genres.GenreFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarCinema"
@@ -13,11 +13,11 @@
         android:layout_height="?actionBarSize" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCinemas"
+        android:id="@+id/rvGenres"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:padding="15dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/cinema_cell" />
+        tools:listitem="@layout/genre_cell" />
 </LinearLayout>

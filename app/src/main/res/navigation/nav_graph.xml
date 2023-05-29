@@ -23,14 +23,10 @@
             app:argType="integer" />
     </fragment>
     <fragment
-        android:id="@+id/cinemaFragment"
-        android:name="com.example.my_movie_app.ui.cinema.CinemaFragment"
-        android:label="@string/title_cinema"
-        tools:layout="@layout/fragment_cinema" >
-        <action
-            android:id="@+id/action_cinemaFragment_to_mapFragment"
-            app:destination="@id/mapFragment" />
-    </fragment>
+        android:id="@+id/genreFragment"
+        android:name="com.example.my_movie_app.ui.genres.GenreFragment"
+        android:label="@string/title_genre"
+        tools:layout="@layout/fragment_genre"/>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.my_movie_app.ui.profile.ProfileFragment"
@@ -40,9 +36,4 @@
             android:id="@+id/action_profileFragment_to_filmPageFragment"
             app:destination="@id/filmPageFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/mapFragment"
-        android:name="com.example.my_movie_app.ui.map.MapFragment"
-        android:label="MapFragment"
-        tools:layout="@layout/fragment_map" />
 </navigation>

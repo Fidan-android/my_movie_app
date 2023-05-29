@@ -1,6 +1,7 @@
 package com.example.my_movie_app.api
 
 import com.example.my_movie_app.api.models.*
+import com.example.my_movie_app.models.AddCommentRequest
 import com.example.my_movie_app.models.FavouriteMovieRequest
 import com.example.planner.models.LoginRequest
 import com.example.planner.models.RegistrationRequest
@@ -24,12 +25,12 @@ interface ApiService {
         @Body body: UpdateImageProfileModel
     ): Call<Any>
 
-    @GET("cinema/")
-    suspend fun getCinema(): CinemaResponse
-
     @GET("favourites/")
     fun getFavouriteMovies(): Call<FavouriteMoviesResponse>
 
     @POST("favourites/")
     fun saveFavouriteMovie(@Body body: FavouriteMovieRequest): Call<FavouriteMoviesResponse>
+
+    @POST("comment/")
+    fun addComment(@Body body: AddCommentRequest): Call<MessageResponse>
 }

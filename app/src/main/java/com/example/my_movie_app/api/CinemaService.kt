@@ -1,9 +1,6 @@
 package com.example.my_movie_app.api
 
-import com.example.my_movie_app.api.models.FilmModel
-import com.example.my_movie_app.api.models.FilmVideoModel
-import com.example.my_movie_app.api.models.FilmsResponse
-import com.example.my_movie_app.api.models.FilteredFilmsByKeywordModel
+import com.example.my_movie_app.api.models.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -23,4 +20,10 @@ interface CinemaService {
     fun getFilteredFilms(
         @Query("keyword") keyword: String,
     ): Call<FilteredFilmsByKeywordModel>
+
+    @GET("v2.2/films/filters")
+    fun getGenres(): Call<FilterResponse>
+
+    @GET("v1/staff")
+    fun getStaffByFilm(@Query("filmId") filmId: Int): Call<MutableList<StaffModel>>
 }

@@ -10,13 +10,11 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.R
-import com.example.my_movie_app.api.models.CategoryModel
-import com.example.my_movie_app.api.models.CinemaModel
 import com.example.my_movie_app.api.models.FavouriteFilmModel
 import com.example.my_movie_app.api.models.FilmModel
+import com.example.my_movie_app.api.models.GenreModel
+import com.example.my_movie_app.api.models.StaffModel
 
 
 class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemClickListener) :
@@ -38,8 +36,11 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
             1 -> FavouriteFilmsViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.film_cell, parent, false)
             )
-            2 -> CinemaViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.cinema_cell, parent, false)
+            2 -> GenreViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.genre_cell, parent, false)
+            )
+            3 -> StaffViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.staff_cell, parent, false)
             )
             else -> throw IllegalArgumentException("Unknown view type")
         }
@@ -55,8 +56,12 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
                 renderList[position] as FavouriteFilmModel,
                 delegate::onClick
             )
-            is CinemaViewHolder -> holder.onBind(
-                renderList[position] as CinemaModel,
+            is GenreViewHolder -> holder.onBind(
+                renderList[position] as GenreModel,
+                delegate::onClick
+            )
+            is StaffViewHolder -> holder.onBind(
+                renderList[position] as StaffModel,
                 delegate::onClick
             )
         }
@@ -117,32 +122,32 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
         }
     }
 
-    open class CinemaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open class GenreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val rootView: LinearLayout = itemView.findViewById(R.id.rootView)
-        private val bgCinema: AppCompatImageView = itemView.findViewById(R.id.bgCinema)
-        private val cinemaName: AppCompatTextView = itemView.findViewById(R.id.cinemaName)
-        private val cinemaAddress: AppCompatTextView = itemView.findViewById(R.id.cinemaAddress)
+        private val genreName: AppCompatTextView = itemView.findViewById(R.id.genreName)
 
-        open fun onBind(model: CinemaModel, onClick: (Int) -> Unit) {
+        open fun onBind(model: GenreModel, onClick: (Int) -> Unit) {
+            genreName.text = model.genre
+            rootView.setOnClickListener {
+                onClick(model.id ?: 0)
+            }
+        }
+    }
+
+    open class StaffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val posterStaff: AppCompatImageView = itemView.findViewById(R.id.posterStaff)
+        private val nameStaff: AppCompatTextView = itemView.findViewById(R.id.nameStaff)
+
+        open fun onBind(model: StaffModel, onClick: (Int) -> Unit) {
+            nameStaff.text = model.nameRu
             Glide
                 .with(itemView.context)
-                .load(
-                    GlideUrl(
-                        "http://n931333e.beget.tech/api/v3/img/" + model.imageUrl,
-                        LazyHeaders.Builder()
-                            .addHeader("User-Agent", "Mozilla/5.0")
-                            .build()
-                    )
-                )
+                .load(model.posterUrl)
                 .centerCrop()
                 .error(R.drawable.logo)
-                .into(bgCinema)
-            cinemaName.text = model.cinemaName
-            cinemaAddress.text = model.address
-            rootView.setOnClickListener {
-                onClick(adapterPosition)
-            }
+                .into(posterStaff)
         }
     }
 }

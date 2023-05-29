@@ -2,9 +2,7 @@
     <string name="app_name">Фильмы</string>
 
     <string name="title_films">Фильмы</string>
-    <string name="title_cinema">Кинотеатры</string>
-    <string name="title_tickets">Билеты</string>
-    <string name="title_category">Жанры</string>
+    <string name="title_genre">Жанры</string>
     <string name="title_profile">Профиль</string>
     <string name="enter_login">Введите логин</string>
     <string name="enter_password">Введите пароль</string>
@@ -28,4 +26,7 @@
     <string name="sorting_films">Сортировка фильмов</string>
     <string name="clear_sorting"><u>Очистить соортировку</u></string>
     <string name="sort_type">sort_type</string>
+    <string name="enter_comment">Введите Ваш комментарий…</string>
+    <string name="comment">Отправить комментарий</string>
+    <string name="next">Далее</string>
 </resources>

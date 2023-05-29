@@ -21,7 +21,13 @@ import com.example.my_movie_app.Properties
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
+import com.example.my_movie_app.api.models.GenreModel
+import com.example.my_movie_app.api.models.StaffModel
+import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentFilmPageBinding
+import com.example.my_movie_app.ui.adapters.RenderAdapter
+import com.example.my_movie_app.ui.dialogs.AddCommentDialog
+import com.example.my_movie_app.ui.dialogs.IAddCommentDialog
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,6 +42,15 @@ class FilmPageFragment : Fragment() {
 
     private val viewModel by lazy {
         ViewModelProvider(this)[FilmPageViewModel::class.java]
+    }
+    private val adapter: RenderAdapter<StaffModel> by lazy {
+        RenderAdapter(
+            RenderViewType.StaffViewType.viewType,
+            object : RenderAdapter.IItemClickListener {
+                override fun onClick(position: Int) {
+
+                }
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +77,7 @@ class FilmPageFragment : Fragment() {
             isChecked = !isChecked
             binding.likesFilm.isActivated = isChecked
         }
+        binding.rvStaff.adapter = adapter
     }
 
     @SuppressLint("SetJavaScriptEnabled", "SimpleDateFormat")
@@ -115,24 +131,28 @@ class FilmPageFragment : Fragment() {
                 it.countries?.joinToString(", ") { country -> country.country }
                     ?.plus(", " + it.year)
 
-            val minutes = if (it.filmLength?.contains(':') == false) {
-                it.filmLength.toInt()
-            } else {
-                SimpleDateFormat("mm").format(Date(SimpleDateFormat("HH:mm").parse(it.filmLength.toString())!!.time))
-                    .toInt()
-            }
-
-            binding.timeFilm.text =
-                when {
-                    it.filmLength == null -> ""
-                    minutes < 60 -> minutes.toString()
-                        .plus("мин")
-                    else -> (minutes / 60).toString()
-                        .plus("ч ") + (minutes % 60).toString().plus("мин")
+            if (it.filmLength != null) {
+                val minutes = if (!it.filmLength.contains(':')) {
+                    it.filmLength.toInt()
+                } else {
+                    SimpleDateFormat("mm").format(Date(SimpleDateFormat("HH:mm").parse(it.filmLength.toString())!!.time))
+                        .toInt()
                 }
+
+                binding.timeFilm.text =
+                    when {
+                        minutes < 60 -> minutes.toString()
+                            .plus("мин")
+                        else -> (minutes / 60).toString()
+                            .plus("ч ") + (minutes % 60).toString().plus("мин")
+                    }
+            }
             binding.description.text = it.description
             binding.ratingFilm.text =
                 it.ratingKinopoisk?.toString() ?: it.ratingImdb?.toString() ?: "0.0"
+        }
+        viewModel.onGetStaff().observe(viewLifecycleOwner) {
+            adapter.onUpdateItems(it)
         }
         viewModel.onGetVideos().observe(viewLifecycleOwner) {
             binding.webView.isGone = it.videoItems.isEmpty()
@@ -179,6 +199,14 @@ class FilmPageFragment : Fragment() {
             isChecked = !isChecked
             binding.likesFilm.isActivated = isChecked
             viewModel.onFavouriteMovie(isChecked)
+        }
+
+        binding.commentFilm.setOnClickListener {
+            AddCommentDialog(object : IAddCommentDialog {
+                override fun onAccept(stars: Int, comment: String) {
+                    viewModel.onCreateComment(stars, comment)
+                }
+            }).show(parentFragmentManager, AddCommentDialog::class.java.name)
         }
 
         binding.btnBack.setOnClickListener {

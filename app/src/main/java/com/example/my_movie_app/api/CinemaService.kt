@@ -26,4 +26,7 @@ interface CinemaService {
 
     @GET("v1/staff")
     fun getStaffByFilm(@Query("filmId") filmId: Int): Call<MutableList<StaffModel>>
+
+    @GET("v2.2/films")
+    fun getFilmsByGenre(@Query("genres") genreId: Int, @Query("page") currentPage: Int): Call<FilmsResponse>
 }

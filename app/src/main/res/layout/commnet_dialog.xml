@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="@font/montserrat_bold"
-                    android:text="Выберите оценку"
+                    android:text="@string/change_stars"
                     android:textColor="@color/White_100"
                     android:textSize="18sp" />
 
@@ -41,9 +41,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="25dp"
+                    android:numStars="5"
                     android:progressBackgroundTint="@color/Black_45"
                     android:progressTint="@color/material_color_yellow_400"
-                    android:numStars="5" />
+                    android:stepSize="1" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnNext"

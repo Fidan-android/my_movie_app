@@ -1,20 +1,23 @@
 package com.example.my_movie_app.ui.adapters
 
+import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RatingBar
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.example.my_movie_app.R
-import com.example.my_movie_app.api.models.FavouriteFilmModel
-import com.example.my_movie_app.api.models.FilmModel
-import com.example.my_movie_app.api.models.GenreModel
-import com.example.my_movie_app.api.models.StaffModel
+import com.example.my_movie_app.api.models.*
+import java.text.SimpleDateFormat
 
 
 class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemClickListener) :
@@ -42,6 +45,9 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
             3 -> StaffViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.staff_cell, parent, false)
             )
+            4 -> CommentViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.comment_cell, parent, false)
+            )
             else -> throw IllegalArgumentException("Unknown view type")
         }
     }
@@ -62,6 +68,10 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
             )
             is StaffViewHolder -> holder.onBind(
                 renderList[position] as StaffModel,
+                delegate::onClick
+            )
+            is CommentViewHolder -> holder.onBind(
+                renderList[position] as CommentModel,
                 delegate::onClick
             )
         }
@@ -148,6 +158,41 @@ class RenderAdapter<T>(private val viewType: Int, private val delegate: IItemCli
                 .centerCrop()
                 .error(R.drawable.logo)
                 .into(posterStaff)
+        }
+    }
+
+    open class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val userAvatar: AppCompatImageView = itemView.findViewById(R.id.userAvatar)
+        private val textComment: AppCompatTextView = itemView.findViewById(R.id.textComment)
+        private val ratingComment: RatingBar = itemView.findViewById(R.id.ratingComment)
+        private val authorComment: AppCompatTextView = itemView.findViewById(R.id.authorComment)
+        private val createAtComment: AppCompatTextView = itemView.findViewById(R.id.createAtComment)
+
+        @SuppressLint("SimpleDateFormat")
+        open fun onBind(model: CommentModel, onClick: (Int) -> Unit) {
+            textComment.text = model.comment
+            ratingComment.isEnabled = false
+            ratingComment.rating = model.star.toFloat()
+            authorComment.text = model.userName
+            createAtComment.text = SimpleDateFormat("dd MMMM yyyy HH:mm").format(
+                SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(model.createdAt)!!
+            )
+            Glide
+                .with(itemView.context)
+                .load(
+                    GlideUrl(
+                        "http://n931333e.beget.tech/api/v3/img/" + model.userAvatar,
+                        LazyHeaders.Builder()
+                            .addHeader("User-Agent", "Mozilla/5.0")
+                            .build()
+                    )
+                )
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerCrop()
+                .error(R.drawable.logo)
+                .into(userAvatar)
         }
     }
 }

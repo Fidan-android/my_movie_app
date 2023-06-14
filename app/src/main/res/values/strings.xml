@@ -29,4 +29,12 @@
     <string name="enter_comment">Введите Ваш комментарий…</string>
     <string name="comment">Отправить комментарий</string>
     <string name="next">Далее</string>
+    <string name="enter_last_name">Введите отчество</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="un_auth_title">Вы еще не авторизовались. Хотите это исправить?</string>
+    <string name="edited_profile">Редактирование профиля</string>
+    <string name="change_stars">Выберите оценку</string>
+    <string name="description">Описание:</string>
+    <string name="staffs">Актеры:</string>
+    <string name="requests">Отзывы:</string>
 </resources>

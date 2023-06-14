@@ -9,31 +9,47 @@
         android:id="@+id/filmsFragment"
         android:name="com.example.my_movie_app.ui.films.FilmsFragment"
         android:label="@string/title_films"
-        tools:layout="@layout/fragment_films" >
+        tools:layout="@layout/fragment_films">
         <action
             android:id="@+id/action_filmsFragment_to_filmPageFragment"
-            app:destination="@id/filmPageFragment">
-        </action>
+            app:destination="@id/filmPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/filmPageFragment"
         android:name="com.example.my_movie_app.ui.films.film_page.FilmPageFragment"
         tools:layout="@layout/fragment_film_page">
-        <argument android:name="filmId"
+        <argument
+            android:name="filmId"
             app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/genreFragment"
         android:name="com.example.my_movie_app.ui.genres.GenreFragment"
         android:label="@string/title_genre"
-        tools:layout="@layout/fragment_genre"/>
+        tools:layout="@layout/fragment_genre">
+        <action
+            android:id="@+id/action_genreFragment_to_filteredFilmsFragment"
+            app:destination="@id/filteredFilmsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.my_movie_app.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_filmPageFragment"
             app:destination="@id/filmPageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filteredFilmsFragment"
+        android:name="com.example.my_movie_app.ui.genres.filter.FilteredFilmsFragment"
+        android:label="FilteredFilmsFragment"
+        tools:layout="@layout/fragment_films">
+        <action
+            android:id="@+id/action_filteredFilmsFragment_to_filmPageFragment"
+            app:destination="@id/filmPageFragment" />
+        <argument
+            android:name="genreId"
+            app:argType="integer" />
     </fragment>
 </navigation>

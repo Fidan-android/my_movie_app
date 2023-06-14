@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.my_movie_app.BaseTextWatcher
 import com.example.my_movie_app.MainActivity
+import com.example.my_movie_app.Properties.RESULT_AUTH
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
@@ -52,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
             ed.putString(getString(R.string.token), it)
             ed.apply()
             startActivity(Intent(this, MainActivity::class.java))
+            setResult(RESULT_AUTH)
             finish()
         }
         viewModel.onGetErrorMessage().observe(this) {

@@ -3,8 +3,6 @@ package com.example.my_movie_app.ui.films
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -13,13 +11,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.my_movie_app.MainActivity
-import com.example.my_movie_app.Properties
 import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.api.models.FilmModel
 import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentFilmsBinding
+import com.example.my_movie_app.ui.adapters.PaginationListener
 import com.example.my_movie_app.ui.adapters.RenderAdapter
 import com.example.my_movie_app.ui.dialogs.ISortingFilmsDialog
 import com.example.my_movie_app.ui.dialogs.SortingFilmsDialog

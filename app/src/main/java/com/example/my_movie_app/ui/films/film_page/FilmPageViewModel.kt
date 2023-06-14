@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_app.Properties
 import com.example.my_movie_app.api.ApiHelper
-import com.example.my_movie_app.api.models.FilmModel
-import com.example.my_movie_app.api.models.FilmVideoModel
-import com.example.my_movie_app.api.models.StaffModel
+import com.example.my_movie_app.api.models.*
 import com.example.my_movie_app.models.AddCommentRequest
 import com.example.my_movie_app.models.FavouriteMovieRequest
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +17,7 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
     private val filmLiveData: MutableLiveData<FilmModel> = MutableLiveData()
     private val staffOfFilmLiveData: MutableLiveData<MutableList<StaffModel>> = MutableLiveData()
     private val videosLiveData: MutableLiveData<FilmVideoModel> = MutableLiveData()
+    private val commentsLiveData: MutableLiveData<MutableList<CommentModel>> = MutableLiveData()
     private val isErrorLiveData: MutableLiveData<String> = MutableLiveData()
     private var filmId: Int = 0
     private val isProgress: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -26,6 +25,7 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
     override fun onGetData() = filmLiveData
     override fun onGetVideos() = videosLiveData
     override fun onGetStaff() = staffOfFilmLiveData
+    override fun onGetComments() = commentsLiveData
 
     override fun onGetErrorMessage() = isErrorLiveData
     override fun onProgressBar() = isProgress
@@ -52,7 +52,10 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
             // load film staff
             val staffResponse = ApiHelper.getStaffByFilm(filmId).execute()
             if (staffResponse.isSuccessful) {
-                staffOfFilmLiveData.postValue(staffResponse.body()?.filter { staff -> staff.professionKey == "ACTOR" }?.toMutableList())
+                staffOfFilmLiveData.postValue(
+                    staffResponse.body()?.filter { staff -> staff.professionKey == "ACTOR" }
+                        ?.toMutableList()
+                )
             } else {
                 isErrorLiveData.postValue(staffResponse.message())
             }
@@ -64,6 +67,17 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
                 isProgress.postValue(false)
             } else {
                 isErrorLiveData.postValue(videosResponse.message())
+            }
+
+            // load comments
+            val commentResponse = ApiHelper.getComments(filmId).execute()
+            if (commentResponse.isSuccessful) {
+                val body = commentResponse.body() as CommentResponse
+                if (body.message.isNullOrEmpty()) {
+                    commentsLiveData.postValue(commentResponse.body()?.comments ?: mutableListOf())
+                } else {
+                    commentsLiveData.postValue(mutableListOf())
+                }
             }
         }
     }
@@ -82,7 +96,9 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
                 ).execute()
 
                 if (response.isSuccessful) {
-                    Properties.favouriteMovies.postValue(response.body()?.favourites ?: mutableListOf())
+                    Properties.favouriteMovies.postValue(
+                        response.body()?.favourites ?: mutableListOf()
+                    )
                 }
             }
         } catch (ex: Exception) {
@@ -98,7 +114,10 @@ class FilmPageViewModel : ViewModel(), IFilmPageViewModel<FilmModel> {
                 ).execute()
 
                 if (response.isSuccessful) {
-
+                    val body = response.body() as CommentResponse
+                    if (body.message.isNullOrEmpty()) {
+                        commentsLiveData.postValue(body.comments ?: mutableListOf())
+                    }
                 }
             }
         } catch (ex: Exception) {

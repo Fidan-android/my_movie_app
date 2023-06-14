@@ -3,20 +3,17 @@ package com.example.my_movie_app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
+import androidx.navigation.ui.NavigationUI
+import com.example.my_movie_app.Properties.RESULT_AUTH
 import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.databinding.ActivityMainBinding
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -122,6 +119,13 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         ApiManager.unsetConnectCallback()
         super.onStop()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == RESULT_AUTH) {
+            finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {

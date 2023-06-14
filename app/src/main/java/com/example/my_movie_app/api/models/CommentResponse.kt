@@ -3,5 +3,6 @@ package com.example.my_movie_app.api.models
 import com.google.gson.annotations.SerializedName
 
 data class CommentResponse(
-    @SerializedName("id") val id: Int
+    @SerializedName("message") val message: String? = null,
+    @SerializedName("comments") val comments: MutableList<CommentModel>? = null
 )

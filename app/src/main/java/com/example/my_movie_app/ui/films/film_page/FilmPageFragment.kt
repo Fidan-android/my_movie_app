@@ -1,27 +1,26 @@
 package com.example.my_movie_app.ui.films.film_page
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
-import com.example.my_movie_app.MainActivity
+import com.example.my_movie_app.*
 import com.example.my_movie_app.Properties
-import com.example.my_movie_app.R
 import com.example.my_movie_app.api.ApiManager
 import com.example.my_movie_app.api.IInternetConnected
-import com.example.my_movie_app.api.models.GenreModel
+import com.example.my_movie_app.api.models.CommentModel
 import com.example.my_movie_app.api.models.StaffModel
 import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentFilmPageBinding
@@ -31,9 +30,9 @@ import com.example.my_movie_app.ui.dialogs.IAddCommentDialog
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.properties.Delegates
 
-class FilmPageFragment : Fragment() {
+
+class FilmPageFragment : BaseFragment() {
 
     private var _binding: FragmentFilmPageBinding? = null
     private val binding get() = _binding!!
@@ -43,9 +42,20 @@ class FilmPageFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(this)[FilmPageViewModel::class.java]
     }
-    private val adapter: RenderAdapter<StaffModel> by lazy {
+
+    private val staffModelRenderAdapter: RenderAdapter<StaffModel> by lazy {
         RenderAdapter(
             RenderViewType.StaffViewType.viewType,
+            object : RenderAdapter.IItemClickListener {
+                override fun onClick(position: Int) {
+
+                }
+            })
+    }
+
+    private val commentModelRenderAdapter: RenderAdapter<CommentModel> by lazy {
+        RenderAdapter(
+            RenderViewType.CommentViewType.viewType,
             object : RenderAdapter.IItemClickListener {
                 override fun onClick(position: Int) {
 
@@ -73,14 +83,68 @@ class FilmPageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.onSaveFilmId(args.filmId)
 
+        binding.rvStaff.adapter = staffModelRenderAdapter
+        binding.rvComments.adapter = commentModelRenderAdapter
+
+        if (App.appContext.getSharedPreferences(
+                App.appContext.getString(R.string.app_name),
+                Context.MODE_PRIVATE
+            ).getString("token", "") != ""
+        ) {
+            configureAuthorizedProfile()
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun configureAuthorizedProfile() {
+        binding.likesFilm.visibility = View.VISIBLE
+        binding.commentFilm.visibility = View.VISIBLE
         if (Properties.favouriteMovies.value?.any { item -> item.kinopoiskId == args.filmId || item.filmId == args.filmId } == true) {
             isChecked = !isChecked
             binding.likesFilm.isActivated = isChecked
         }
-        binding.rvStaff.adapter = adapter
+        viewModel.onGetVideos().observe(viewLifecycleOwner) {
+            binding.webView.isGone = it.videoItems.isEmpty()
+            binding.videoView.isGone = it.videoItems.isEmpty()
+
+            if (it.videoItems.isNotEmpty()) {
+                binding.videoLayout.isVisible = true
+
+                val url = it.videoItems.first().url
+                if (url.startsWith("https://www.youtube.com/")) {
+                    binding.webView.isVisible = true
+                    binding.videoView.isVisible = false
+                    binding.webView.apply {
+                        settings.javaScriptEnabled = true
+                        loadData(
+                            initIframeVideo("https://www.youtube.com/embed/${url.substringAfter("v/")}?autoplay=1&vq=small"),
+                            "text/html",
+                            "utf-8"
+                        )
+                        webChromeClient = WebChromeClient()
+                    }
+                } else if (url.endsWith(".mp4")) {
+                    binding.webView.isVisible = false
+                    binding.videoView.isVisible = true
+                    binding.videoView.setVideoURI(Uri.parse(url))
+                    binding.videoView.setOnPreparedListener { mp ->
+                        mp.isLooping = true
+                        binding.videoView.start()
+                    }
+                } else {
+                    binding.webView.isVisible = true
+                    binding.videoView.isVisible = false
+                    binding.webView.apply {
+                        settings.javaScriptEnabled = true
+                        loadUrl(url)
+                        webChromeClient = WebChromeClient()
+                    }
+                }
+            }
+        }
     }
 
-    @SuppressLint("SetJavaScriptEnabled", "SimpleDateFormat")
+    @SuppressLint("SimpleDateFormat")
     override fun onStart() {
         ApiManager.setConnectCallback(requireContext(), object : IInternetConnected {
             override fun onConnect() {
@@ -97,6 +161,7 @@ class FilmPageFragment : Fragment() {
 
         })
         super.onStart()
+
         viewModel.onGetData().observe(viewLifecycleOwner) {
             Glide
                 .with(requireContext())
@@ -152,38 +217,18 @@ class FilmPageFragment : Fragment() {
                 it.ratingKinopoisk?.toString() ?: it.ratingImdb?.toString() ?: "0.0"
         }
         viewModel.onGetStaff().observe(viewLifecycleOwner) {
-            adapter.onUpdateItems(it)
+            staffModelRenderAdapter.onUpdateItems(it)
         }
-        viewModel.onGetVideos().observe(viewLifecycleOwner) {
-            binding.webView.isGone = it.videoItems.isEmpty()
-            binding.videoView.isGone = it.videoItems.isEmpty()
-
-            if (it.videoItems.isNotEmpty()) {
-                binding.videoLayout.isVisible = true
-
-                val url = it.videoItems.first().url
-                if (url.startsWith("https://www.youtube.com/")) {
-                    binding.webView.isVisible = true
-                    binding.videoView.isVisible = false
-                    binding.webView.apply {
-                        settings.javaScriptEnabled = true
-                        loadData(
-                            initIframeVideo("https://www.youtube.com/embed/${url.substringAfter("v/")}?autoplay=1&vq=small"),
-                            "text/html",
-                            "utf-8"
-                        )
-                        webChromeClient = WebChromeClient()
-                    }
-                } else {
-                    binding.webView.isVisible = true
-                    binding.videoView.isVisible = false
-                    binding.webView.apply {
-                        settings.javaScriptEnabled = true
-                        loadUrl(url)
-                        webChromeClient = WebChromeClient()
-                    }
-                }
+        viewModel.onGetComments().observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                binding.commentsLayout.visibility = View.VISIBLE
+            } else {
+                binding.commentsLayout.visibility = View.GONE
             }
+            commentModelRenderAdapter.onUpdateItems(it)
+        }
+        viewModel.onGetErrorMessage().observe(viewLifecycleOwner) {
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         }
         viewModel.onProgressBar().observe(viewLifecycleOwner) {
             if (it) {
@@ -200,7 +245,6 @@ class FilmPageFragment : Fragment() {
             binding.likesFilm.isActivated = isChecked
             viewModel.onFavouriteMovie(isChecked)
         }
-
         binding.commentFilm.setOnClickListener {
             AddCommentDialog(object : IAddCommentDialog {
                 override fun onAccept(stars: Int, comment: String) {
@@ -208,7 +252,6 @@ class FilmPageFragment : Fragment() {
                 }
             }).show(parentFragmentManager, AddCommentDialog::class.java.name)
         }
-
         binding.btnBack.setOnClickListener {
             NavHostFragment.findNavController(this@FilmPageFragment).popBackStack()
         }

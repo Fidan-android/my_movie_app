@@ -1,13 +1,15 @@
 package com.example.my_movie_app.ui.genres
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
 import com.example.my_movie_app.MainActivity
 import com.example.my_movie_app.R
-import com.example.my_movie_app.api.ApiManager
-import com.example.my_movie_app.api.IInternetConnected
 import com.example.my_movie_app.api.models.GenreModel
 import com.example.my_movie_app.conventions.RenderViewType
 import com.example.my_movie_app.databinding.FragmentGenreBinding
@@ -27,7 +29,11 @@ class GenreFragment : Fragment() {
             RenderViewType.GenresViewType.viewType,
             object : RenderAdapter.IItemClickListener {
                 override fun onClick(position: Int) {
-                    
+                    NavHostFragment.findNavController(this@GenreFragment)
+                        .navigate(
+                            GenreFragmentDirections.actionGenreFragmentToFilteredFilmsFragment(position),
+                            NavOptions.Builder().setRestoreState(true).build()
+                        )
                 }
             })
     }
@@ -55,19 +61,6 @@ class GenreFragment : Fragment() {
     }
 
     override fun onStart() {
-        ApiManager.setConnectCallback(requireContext(), object : IInternetConnected {
-            override fun onConnect() {
-            }
-
-            override fun onLost() {
-                Snackbar.make(
-                    binding.root,
-                    "Отсутствует интернет соединение",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-
-        })
         super.onStart()
         viewModel.onGetErrorMessage().observe(viewLifecycleOwner) {
             Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()

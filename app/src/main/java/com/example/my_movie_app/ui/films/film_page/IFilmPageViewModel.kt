@@ -2,6 +2,7 @@ package com.example.my_movie_app.ui.films.film_page
 
 import androidx.lifecycle.MutableLiveData
 import com.example.my_movie_app.IBaseViewModel
+import com.example.my_movie_app.api.models.CommentModel
 import com.example.my_movie_app.api.models.FilmVideoModel
 import com.example.my_movie_app.api.models.StaffModel
 
@@ -11,5 +12,6 @@ interface IFilmPageViewModel<T> : IBaseViewModel<T> {
     fun onGetVideos(): MutableLiveData<FilmVideoModel>
     fun onFavouriteMovie(isFavourite: Boolean)
     fun onGetStaff(): MutableLiveData<MutableList<StaffModel>>
+    fun onGetComments(): MutableLiveData<MutableList<CommentModel>>
     fun onCreateComment(stars: Int, comment: String)
 }

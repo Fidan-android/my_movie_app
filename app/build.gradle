@@ -62,7 +62,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation rootProject.ext.appCompat
     implementation rootProject.ext.material
-    implementation rootProject.ext.material03
     implementation rootProject.ext.constraint
 
     // Test

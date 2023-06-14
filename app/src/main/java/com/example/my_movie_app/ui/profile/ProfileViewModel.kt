@@ -1,11 +1,11 @@
 package com.example.my_movie_app.ui.profile
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.my_movie_app.api.ApiHelper
 import com.example.my_movie_app.api.models.ProfileResponse
 import com.example.my_movie_app.api.models.UpdateImageProfileModel
+import com.example.my_movie_app.models.EditProfileRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -27,6 +27,17 @@ class ProfileViewModel : ViewModel(), IProfileViewModel<ProfileResponse> {
             ).execute()
         }.invokeOnCompletion {
             onLoadData()
+        }
+    }
+
+    override fun onEditProfile(firstName: String, middleName: String, lastName: String) {
+        MainScope().launch(Dispatchers.IO) {
+            try {
+                val response = ApiHelper.editProfile(EditProfileRequest(firstName, middleName, lastName)).execute()
+                profileLiveData.postValue(response.body())
+            } catch (e: Exception) {
+                isErrorLiveData.postValue(e.message)
+            }
         }
     }
 

@@ -1,6 +1,5 @@
-package com.example.my_movie_app.ui.films
+package com.example.my_movie_app.ui.adapters
 
-import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 

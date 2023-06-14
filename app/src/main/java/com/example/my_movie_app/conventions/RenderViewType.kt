@@ -5,4 +5,5 @@ enum class RenderViewType(val viewType: Int) {
     FavouriteFilmsViewType(1),
     GenresViewType(2),
     StaffViewType(3),
+    CommentViewType(4),
 }

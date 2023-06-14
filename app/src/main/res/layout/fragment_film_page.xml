@@ -70,6 +70,7 @@
             android:id="@+id/likesFilm"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:visibility="gone"
             android:layout_margin="10dp"
             android:clickable="true"
             android:focusable="true"
@@ -81,6 +82,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/commentFilm"
             android:layout_width="40dp"
+            android:visibility="gone"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:clickable="true"
@@ -216,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingHorizontal="10dp"
-                android:text="Актеры:"
+                android:text="@string/staffs"
                 android:textColor="@color/White_100"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -237,7 +239,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:paddingHorizontal="10dp"
-                android:text="Описание:"
+                android:text="@string/description"
                 android:textColor="@color/White_100"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -251,27 +253,34 @@
                 android:textColor="@color/White_75"
                 android:textSize="18sp" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/title_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:paddingHorizontal="10dp"
-                android:text="Отзывы:"
-                android:textColor="@color/White_100"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvComments"
+            <LinearLayout
+                android:id="@+id/commentsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/comment_cell" />
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/title_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:text="@string/requests"
+                    android:textColor="@color/White_100"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvComments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/comment_cell" />
+            </LinearLayout>
 
         </LinearLayout>
 
